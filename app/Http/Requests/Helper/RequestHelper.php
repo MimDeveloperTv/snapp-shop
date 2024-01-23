@@ -4,7 +4,6 @@ namespace App\Http\Requests\Helper;
 
 class RequestHelper
 {
-    // Convert farsi number to latin
     public static function faToEn($text): string
     {
         return (string) str_replace(
@@ -13,5 +12,23 @@ class RequestHelper
             $text
         );
 }
+
+    public static function validateCardNumber($cardNumber): bool
+    {
+        if(empty($cardNumber) || strlen($cardNumber) !== 16) {
+            return false;
+        }
+        $cardToArr = str_split($cardNumber);
+        $cardTotal = 0;
+        for($i = 0; $i<16; $i++) {
+            $c = (int)$cardToArr[$i];
+            if($i % 2 === 0) {
+                $cardTotal += (($c * 2 > 9) ? ($c * 2) - 9 : ($c * 2));
+            } else {
+                $cardTotal += $c;
+            }
+        }
+        return ($cardTotal % 10 === 0);
+    }
 
 }
