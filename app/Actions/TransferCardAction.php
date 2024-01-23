@@ -2,14 +2,12 @@
 
 namespace App\Actions;
 
-use App\Models\Order;
-use App\Models\OrderProduct;
-use App\Models\Product;
+
 use Illuminate\Database\Eloquent\Model;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Throwable;
 
-class CreateOrderAction
+class TransferCardAction
 {
     use AsAction;
 
