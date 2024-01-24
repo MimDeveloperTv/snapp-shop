@@ -7,7 +7,7 @@ use Illuminate\Support\Str;
 
 class CardFactory extends Factory
 {
-    public $card = ['6219861905878400' , '6037997535775358' , '6037691551197544','6104337821129960'] ;
+    public $card = ['6219861905878400' , '6037997535775358', '6037691551197544'] ;
     /**
      * Define the model's default state.
      *

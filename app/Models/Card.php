@@ -34,8 +34,25 @@ class Card extends Model
         return $this->hasMany(Transaction::class);
     }
 
+    public function sourceTransactions(): HasMany
+    {
+        return $this->hasMany(Transaction::class,'dest_card_id');
+    }
+
     public function account(): BelongsTo
     {
         return $this->belongsTo(Account::class);
+    }
+
+    public static function getBalance(string $cardId){
+       return self::query()
+           ->find($cardId)
+           ->sourceTransactions()
+           ->get()
+           ->sum('amount');
+    }
+
+    public static function getCardId(string $cardNumber){
+      return  self::query()->where('number',$cardNumber)->first()->getKey();
     }
 }

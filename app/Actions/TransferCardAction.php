@@ -3,7 +3,17 @@
 namespace App\Actions;
 
 
+use App\Exceptions\AboveBalanceException;
+use App\Exceptions\MaxAmountException;
+use App\Exceptions\MinAmountException;
+use App\Models\Card;
+use App\Models\Transaction;
+use App\Models\WageTransaction;
+use App\Pipes\BalanceWithWageCheck;
+use App\Pipes\MinMaxAmountCheck;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Pipeline\Pipeline;
+use Illuminate\Support\Facades\DB;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Throwable;
 
@@ -16,35 +26,56 @@ class TransferCardAction
      *
      * @throws Throwable
      */
-    public function handle($request): array
+    public function handle(string $sourceCard,string $destCard,float $amount): array
     {
         try {
 
-            $products = Product::query()->whereIn('id', $ids)->get();
-            $total = $products->sum('price');
+            $sourceCard = Card::getCardId($sourceCard);
+            $destCard = Card::getCardId($destCard);
 
-           $order =  Order::query()->create([
-                'user_id' => auth()->id(),
-                'price' => $total,
-                'notifyAdmin' => false,
+            app(Pipeline::class)
+                ->send([
+                    'source' => $sourceCard,
+                    'dest' => $destCard,
+                    'amount' => $amount,
+                ])
+                ->through([
+                    MinMaxAmountCheck::class,
+                   BalanceWithWageCheck::class,
+                ])->thenReturn();
+
+
+            DB::beginTransaction();
+            $upTransaction = Transaction::query()->create([
+                'source_card_id' => $sourceCard,
+                'dest_card_id' => $destCard,
+                'amount' =>  $amount
             ]);
 
-            foreach ($products as $product) {
-                OrderProduct::query()->create([
-                    'order_id' => $order->id,
-                    'product_id' => $product->id ,
-                    'price' => $product->price,
-                ]);
-            }
+            $downTransaction = Transaction::query()->create([
+                'source_card_id' => $destCard,
+                'dest_card_id' => $sourceCard,
+                'amount' =>  - ($amount + Transaction::WAGE_AMOUNT)
+            ]);
 
+            $downTransaction = WageTransaction::query()->create([
+                'source_card_id' => $sourceCard,
+                'amount' =>  Transaction::WAGE_AMOUNT
+            ]);
+
+            DB::commit();
+
+
+            return ['status' => 'ok'];
+
+        }
+        catch (AboveBalanceException|MaxAmountException|MinAmountException $exception) {
+
+            DB::rollBack();
             return [
-                'total' => $total,
-                'order' => $order->id,
+                'code' => $exception->getCode(),
+                'message' => $exception->getMessage(),
             ];
-
-        } catch (\Exception $exception) {
-
-            throw new \Exception('Creating Order Operation Has Error', 500);
         }
     }
 }

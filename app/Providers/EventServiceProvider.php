@@ -4,10 +4,14 @@ namespace App\Providers;
 
 use App\Events\NotifyAdminEvent;
 use App\Listeners\SendNotifyListener;
+use App\Models\Account;
+use App\Models\Card;
 use App\Models\Image;
 use App\Models\Order;
 use App\Models\OrderProduct;
 use App\Models\Product;
+use App\Models\Transaction;
+use App\Models\WageTransaction;
 use App\Observer\NotifyAdminObserver;
 use App\Observer\UlidKeyObserver;
 use Illuminate\Auth\Events\Registered;
@@ -33,6 +37,10 @@ class EventServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Account::observe(UlidKeyObserver::class);
+        Card::observe(UlidKeyObserver::class);
+        Transaction::observe(UlidKeyObserver::class);
+        WageTransaction::observe(UlidKeyObserver::class);
     }
 
     /**

@@ -40,10 +40,20 @@ class DefaultSeeder extends Seeder
               'account_id' => $accountDestId
           ])->count(1)->createQuietly()->get(0)->id;
 
+         $amount = 50000;
+
         $transaction = Transaction::factory()
             ->state([
                 'source_card_id' => $cardSourceId,
                 'dest_card_id' => $cardDestId,
+                'amount' =>  $amount
+            ])->count(1)->createQuietly()->get(0)->id;
+
+        $transaction = Transaction::factory()
+            ->state([
+                'dest_card_id' => $cardSourceId,
+                'source_card_id' => $cardDestId,
+                'amount' =>  -$amount
             ])->count(1)->createQuietly()->get(0)->id;
 
     }

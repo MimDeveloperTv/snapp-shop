@@ -17,7 +17,7 @@ class TransactionFactory extends Factory
     {
         return [
             'id' => (string) Str::ulid() ,
-            'amount' =>  50000 ,
+          //  'amount' =>  50000 ,
             'created_at' => $this->faker->date,
         ];
     }

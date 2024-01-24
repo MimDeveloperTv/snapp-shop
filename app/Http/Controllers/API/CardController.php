@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Actions\CreateOrderAction;
+use App\Actions\TransferCardAction;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\API\TransferRequest;
 use Illuminate\Http\JsonResponse;
@@ -14,7 +14,11 @@ class CardController extends Controller
     public function transfer(TransferRequest $request): JsonResponse
     {
         return response()->json(
-            CreateOrderAction::make()->handle($request)
+            TransferCardAction::make()->handle(
+                $request->getSourceCard(),
+                $request->getDestCard(),
+                $request->getAmount(),
+            )
         );
     }
 }
