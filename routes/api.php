@@ -28,4 +28,5 @@ Route::group(['prefix' => 'auth', 'as' => 'auth.'], function () {
 
 Route::group(['prefix' => 'card', 'as' => 'card.', 'middleware' => 'auth:sanctum'], function () {
     Route::post('transfer', [CardController::class, 'transfer']);
+    Route::get('report', [CardController::class, 'index']);
 });

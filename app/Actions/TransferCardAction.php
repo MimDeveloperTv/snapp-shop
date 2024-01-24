@@ -11,7 +11,6 @@ use App\Models\Transaction;
 use App\Models\WageTransaction;
 use App\Pipes\BalanceWithWageCheck;
 use App\Pipes\MinMaxAmountCheck;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Facades\DB;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -66,7 +65,11 @@ class TransferCardAction
             DB::commit();
 
 
-            return ['status' => 'ok'];
+            return [
+                'source' => $sourceCard,
+                'dest' => $destCard,
+                'status' => 'success'
+            ];
 
         }
         catch (AboveBalanceException|MaxAmountException|MinAmountException $exception) {

@@ -55,4 +55,11 @@ class Card extends Model
     public static function getCardId(string $cardNumber){
       return  self::query()->where('number',$cardNumber)->first()->getKey();
     }
+
+    public function topTransactions(): HasMany
+    {
+        return $this->hasMany(Transaction::class,'dest_card_id')
+            ->orderByDesc('created_at')
+            ->take(10);
+    }
 }
