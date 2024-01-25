@@ -3,6 +3,8 @@
 namespace App\Actions;
 
 
+use App\Events\NotifyEvent;
+use App\Events\SmsEvent;
 use App\Exceptions\AboveBalanceException;
 use App\Exceptions\MaxAmountException;
 use App\Exceptions\MinAmountException;
@@ -51,10 +53,12 @@ class TransferCardAction
                 'amount' =>  $amount
             ]);
 
+            $amountWithWage = -($amount + Transaction::WAGE_AMOUNT);
+
             $downTransaction = Transaction::query()->create([
                 'source_card_id' => $destCard,
                 'dest_card_id' => $sourceCard,
-                'amount' =>  - ($amount + Transaction::WAGE_AMOUNT)
+                'amount' =>  $amountWithWage
             ]);
 
             $downTransaction = WageTransaction::query()->create([
@@ -63,6 +67,9 @@ class TransferCardAction
             ]);
 
             DB::commit();
+
+            SmsEvent::dispatch($sourceCard,SmsEvent::CASH_OUT_TEXT,$amountWithWage);
+            SmsEvent::dispatch($destCard,SmsEvent::CASH_IN_TEXT,$amount);
 
 
             return [

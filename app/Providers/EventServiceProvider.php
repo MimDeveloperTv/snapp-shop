@@ -2,22 +2,16 @@
 
 namespace App\Providers;
 
-use App\Events\NotifyAdminEvent;
-use App\Listeners\SendNotifyListener;
+use App\Events\SmsEvent;
+use App\Listeners\SendSmsListener;
 use App\Models\Account;
 use App\Models\Card;
-use App\Models\Image;
-use App\Models\Order;
-use App\Models\OrderProduct;
-use App\Models\Product;
 use App\Models\Transaction;
 use App\Models\WageTransaction;
-use App\Observer\NotifyAdminObserver;
 use App\Observer\UlidKeyObserver;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
-use Illuminate\Support\Facades\Event;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -29,6 +23,9 @@ class EventServiceProvider extends ServiceProvider
     protected $listen = [
         Registered::class => [
             SendEmailVerificationNotification::class,
+            SmsEvent::class => [
+                SendSmsListener::class,
+            ]
         ],
     ];
 

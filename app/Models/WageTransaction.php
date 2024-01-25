@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Events\NotifyAdminEvent;
+use App\Events\NotifyEvent;
 use App\Models\Concerns\HasModelScope;
 use App\Models\Concerns\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;

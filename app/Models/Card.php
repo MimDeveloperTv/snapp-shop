@@ -7,6 +7,7 @@ use App\Models\Concerns\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Card extends Model
 {
@@ -42,6 +43,11 @@ class Card extends Model
     public function account(): BelongsTo
     {
         return $this->belongsTo(Account::class);
+    }
+
+    public function accountT(): HasOne
+    {
+        return $this->hasOne(Account::class);
     }
 
     public static function getBalance(string $cardId){

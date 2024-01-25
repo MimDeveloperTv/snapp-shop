@@ -31,4 +31,15 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'ghasedak' => [
+        'baseUrl' => env('GHASEDAK_URL'),
+        'apiKey' => env('GHASEDAK_API_KEY'),
+        'sender' => env('GHASEDAK_SENDER_NUMBER'),
+    ],
+
+    'kavehNegar' => [
+        'baseUrl' => env('KAVEH_NEGAR_URL'),
+        'apiKey' => env('KAVEH_NEGAR_API_KEY'),
+    ],
+
 ];

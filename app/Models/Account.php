@@ -6,7 +6,7 @@ use App\Models\Concerns\HasModelScope;
 use App\Models\Concerns\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 
 class Account extends Model
@@ -32,6 +32,11 @@ class Account extends Model
     public function cards(): HasMany
     {
         return $this->hasMany(Card::class);
+    }
+
+    public function user(): HasOne
+    {
+        return $this->hasOne(User::class,'id','user_id');
     }
 
 }
